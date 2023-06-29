@@ -52,4 +52,55 @@ When a client wants to access data from an OPC UA server, it follows a series of
 
 4. Reading and Writing Data: Using the information obtained during the browsing step, the client can read specific values from the nodes of interest by sending read requests to the server.
 
+## The values
+
+Let's see some real-world examples of values that a server could expose for the machines in the `Production Line 1`, and the values that a client may want to have control over:
+
+1. SMT Machine 1 (Model: Yamaha YSM20):
+    - Readable:
+        - CurrentOperatingSpeed: `int` - Represents the current operating speed of the machine in components per minute (e.g., 150).
+        - ErrorStatus: `string` - Represents the current error status of the machine (e.g., "No errors").
+
+    - Writable:
+        - SetOperatingSpeed: `int` - Allows the client to set the desired operating speed of the machine in components per minute.
+        - StartStopCommand: `bool` - Allows the client to send a command to start or stop the machine.
+
+2. SMT Machine 2 (Model: Panasonic NPM-W2):
+    - Readable:
+        - ComponentsPlacedPerHour: `double` - Represents the number of components placed by the machine per hour.
+        - RemainingReelQuantity: `int` - Represents the remaining quantity of a specific component reel.
+
+    - Writable:
+        - ChangePlacementMode: `string` - Allows the client to change the placement mode of the machine (e.g., "single-sided", "double-sided").
+        - ChangeComponentFeedSpeed: `double` - Allows the client to adjust the component feed speed of the machine.
+
+3. Reflow Oven (Model: BTU Pyramax):
+    - Readable:
+        - TemperatureProfile: `double[]` - Represents the current temperature profile during the reflow process.
+        - ConveyorBeltSpeed: `double` - Represents the speed of the conveyor belt inside the oven.
+
+    - Writable:
+        - SetTemperatureProfile: `double[]` - Allows the client to set a new temperature profile for the reflow process.
+        - StartStopCommand: `bool` - Allows the client to send a command to start or stop the oven.
+
+4. AOI Machine (Model: CyberOptics SE500):
+    - Readable:
+        - DefectsDetected: `int` - Represents the number of defects detected in inspected PCBs.
+        - InspectionStatus: `string` - Represents the current inspection status (e.g., "Inspection in progress").
+
+    - Writable:
+        - ConfigureInspectionParameters: `object` - Allows the client to configure inspection parameters such as sensitivity threshold.
+        - PauseResumeInspection: `bool` - Allows the client to send a command to pause or resume the inspection process.
+
+5. ICT Machine (Model: Keysight 3070):
+    - Readable:
+        - TestResult: `string` - Represents the test result (e.g., "Pass", "Fail") for tested PCBs.
+        - TestCoveragePercentage: `double` - Represents the percentage of test coverage achieved.
+
+    - Writable:
+        - SelectTestProgram: `string` - Allows the client to select a specific test program for the machine.
+        - InitiateTestSequence: `bool` - Allows the client to initiate the test sequence.
+
+These examples demonstrate some of the possible values that can be exchanged between the OPC UA server and client for the machines in Production Line 1, using the actual machine models mentioned in the structure.
+
 **Go back to the [README](../README.md) to see an implementation of this example.**
