@@ -1,8 +1,12 @@
 # OPC UA Server & Client Solution :gear: :computer:
 
+[![Documentation](https://img.shields.io/badge/Documentation-Understanding%20OPC-blue)](.documentation/01_understanding_upc.md)
+
 ![readme-client.png](.readme/readme-client.png)
 
 A minimal implementation of OPC UA server and client applications using C#.
+
+_Don't know what UPC is? Follow the documentation._
 
 ## Overview :telescope:
 
