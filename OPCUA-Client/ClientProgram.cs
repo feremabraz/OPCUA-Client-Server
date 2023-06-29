@@ -12,9 +12,10 @@ internal static class ClientProgram
         while (!exitRequested) 
         {
             Console.WriteLine("Choose an option:");
-            Console.WriteLine("1. Browse Server");
-            Console.WriteLine("2. Get Known Nodes Values");
-            Console.WriteLine("3. Exit");
+            Console.WriteLine("1. Browse whole server");
+            Console.WriteLine("2. Get custom nodes identifiers");
+            Console.WriteLine("3. Get a custom node value, given an identifier");
+            Console.WriteLine("4. Exit");
             var userInput = Console.ReadLine();
             switch (userInput)
             {
@@ -22,9 +23,12 @@ internal static class ClientProgram
                     BrowseServer(node);
                     break;
                 case "2":
-                    GetKnownNodesValues(client);
+                    BrowseServer(node, false);
                     break;
                 case "3":
+                    GetKnownNodeValue(client);
+                    break;
+                case "4":
                     exitRequested = true;
                     break;
                 default:
@@ -36,31 +40,35 @@ internal static class ClientProgram
         Console.WriteLine("Exiting.");
     }
 
-    private static void GetKnownNodesValues(OpcClient client)
+    private static void GetKnownNodeValue(OpcClient client)
     {
-        OpcReadNode[] nodesToRead =
+        Console.WriteLine("Enter a OPC UA node identifier for a property.");
+        Console.WriteLine("For example: ns=2;s=Production Line 1/SMT Machine 2/ComponentsPerHour");
+        string? nodeId = Console.ReadLine();
+        OpcReadNode nodeToRead = new OpcReadNode(nodeId);
+        OpcValue nodeValue = client.ReadNode(nodeToRead);
+        Console.WriteLine("Node: {0}, Value: {1}", nodeId, nodeValue.Value);
+    }
+    
+    private static void BrowseServer(OpcNodeInfo node, bool startPrinting = true, int level = 0)
+    {
+
+        if (startPrinting == false && node.NodeId.ToString().Contains("Production Line 1"))
         {
-            new("ns=2;s=Machine/Name"),
-            new("ns=2;s=Machine/Status"),
-            new("ns=2;s=Machine/Position"),
-            new("ns=2;s=Machine/IsActive"),
-            new("ns=2;s=Machine/Temperature")
-        };
-        IEnumerable<OpcValue> nodeValues = client.ReadNodes(nodesToRead).ToList();
-        for (var i = 0; i < nodesToRead.Length; i++)
+            startPrinting = true;
+        }
+
+        if (startPrinting)
         {
-            OpcReadNode node = nodesToRead[i];
-            OpcValue value = nodeValues.ElementAt(i);
-            OpcNodeId key = node.NodeId;
-            object nodeValue = value.Value;
-            Console.WriteLine("Key: {0}, Value: {1}", key, nodeValue);
+            Console.WriteLine("{0}{1}({2})", new string('.', level * 4), node.Attribute(OpcAttribute.DisplayName).Value, node.NodeId);
+            startPrinting = true;
+        }
+
+        level++;
+        foreach (var childNode in node.Children())
+        {
+            BrowseServer(childNode, startPrinting, level);
         }
     }
 
-    private static void BrowseServer(OpcNodeInfo node, int level = 0)
-    {
-        Console.WriteLine("{0}{1}({2})", new string('.', level * 4), node.Attribute(OpcAttribute.DisplayName).Value, node.NodeId);
-        level++;
-        foreach (var childNode in node.Children()) BrowseServer(childNode, level);
-    }
 }
