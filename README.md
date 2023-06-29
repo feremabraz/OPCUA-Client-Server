@@ -1,5 +1,7 @@
 # OPC UA Server & Client Solution :gear: :computer:
 
+![readme-client.png](.readme/readme-client.png)
+
 A minimal implementation of OPC UA server and client applications using C#.
 
 ## Overview :telescope:
