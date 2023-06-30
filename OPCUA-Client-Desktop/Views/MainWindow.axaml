@@ -18,8 +18,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:OPCUA_Client_Desktop.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:viewModels="clr-namespace:OPCUA_Client_Desktop.ViewModels">
+    xmlns:viewModels="clr-namespace:OPCUA_Client_Desktop.ViewModels"
+    xmlns:views="clr-namespace:OPCUA_Client_Desktop.Views">
 
+    <Window.Resources>
+        <views:BoolToConnectionStatusConverter x:Key="BoolToConnectionStatusConverter" />
+    </Window.Resources>
     <Design.DataContext>
         <vm:MainWindowViewModel />
     </Design.DataContext>
@@ -27,16 +31,21 @@
     <Grid RowDefinitions="Auto,Auto,4*">
 
         <!-- First Row - Title -->
-        <TextBlock Grid.Row="0"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Top"
-                   Padding="0,0,0,8"
-                   FontSize="16"
-                   FontWeight="Bold"
-                   Text="Server Explorer" />
+        <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,8" >
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <TextBlock 
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Text="Server Explorer" />
+            </StackPanel>
+            <Button Grid.Column="1" HorizontalAlignment="Right" Command="{Binding ConnectCommand}" Content="{Binding IsConnected, Converter={StaticResource BoolToConnectionStatusConverter}}" />
+        </Grid>
 
         <!-- Second Row - Callout -->
         <Border Grid.Row="1"
+                IsVisible="{Binding ServerError}"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 Padding="8"
@@ -44,7 +53,7 @@
                 BorderThickness="1"
                 CornerRadius="5"
                 Background="#E0E0E0">
-                <TextBlock Text="Connected to OPCUA-Server." />
+                <TextBlock Text="Error: Server not found." />
         </Border>
 
         <!-- Third Row - TreeView and Data Template -->

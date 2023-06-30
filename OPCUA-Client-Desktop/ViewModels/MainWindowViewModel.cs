@@ -1,24 +1,54 @@
 ﻿using System;
+using System.Reactive;
 using ReactiveUI;
 
 namespace OPCUA_Client_Desktop.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    private string? _name;
+    private bool _isConnected = OpcClientSingleton.IsConnected;
+    private bool _serverError;
 
     public MainWindowViewModel()
     {
-        this.WhenAnyValue(vm => vm.Name)
-            .Subscribe(_ => this.RaisePropertyChanged(nameof(Greeting)));
+        ConnectCommand = ReactiveCommand.Create(Connect);
     }
-
-    public string? Name
+    
+    public ReactiveCommand<Unit, Unit> ConnectCommand { get; }
+    
+    private bool IsConnected
     {
-        get => _name;
-        set => this.RaiseAndSetIfChanged(ref _name, value);
+        get => _isConnected;
+        set => this.RaiseAndSetIfChanged(ref _isConnected, value);
+    }
+    
+    private bool ServerError
+    {
+        get => _serverError;
+        set => this.RaiseAndSetIfChanged(ref _serverError, value);
     }
 
-    public string Greeting => $"Hello, {(string.IsNullOrEmpty(Name) ? "world!" : Name)}";
-
+    private void Connect()
+    {
+        if (!IsConnected)
+        {
+            try
+            {
+                OpcClientSingleton.Instance.Connect();
+                IsConnected = true;
+                ServerError = false;
+            }
+            catch (Exception)
+            {
+                IsConnected = false;
+                ServerError = true;
+            }
+        }
+        else
+        {
+            OpcClientSingleton.Instance.Disconnect();
+            IsConnected = false;
+            ServerError = false;
+        }
+    }
 }

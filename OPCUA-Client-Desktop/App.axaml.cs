@@ -21,8 +21,20 @@ public partial class App : Application
             {
                 DataContext = new MainWindowViewModel(),
             };
+            desktop.Startup += OnStartup;
+            desktop.Exit += OnExit;
         }
 
         base.OnFrameworkInitializationCompleted();
     }
+    
+    private void OnStartup(object? s, ControlledApplicationLifetimeStartupEventArgs e)
+    {
+        
+    }
+
+    private void OnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
+    {
+        if (OpcClientSingleton.IsConnected) OpcClientSingleton.Instance.Disconnect();
+    } 
 }

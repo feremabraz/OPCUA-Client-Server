@@ -38,6 +38,7 @@ internal static class ClientProgram
             Console.WriteLine();
         }
         Console.WriteLine("Exiting.");
+        client.Disconnect();
     }
 
     private static void GetKnownNodeValue(OpcClient client)
