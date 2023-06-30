@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OPCUA-Server", "OPCUA-Serve
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OPCUA-Client", "OPCUA-Client\OPCUA-Client.csproj", "{F284DA4A-DBC8-4A8A-998A-B82CDF83D45D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OPCUA-Client-Desktop", "OPCUA-Client-Desktop\OPCUA-Client-Desktop.csproj", "{11A68BEF-16FF-498F-90D8-8620348D53AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{F284DA4A-DBC8-4A8A-998A-B82CDF83D45D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F284DA4A-DBC8-4A8A-998A-B82CDF83D45D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F284DA4A-DBC8-4A8A-998A-B82CDF83D45D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11A68BEF-16FF-498F-90D8-8620348D53AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11A68BEF-16FF-498F-90D8-8620348D53AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11A68BEF-16FF-498F-90D8-8620348D53AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11A68BEF-16FF-498F-90D8-8620348D53AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

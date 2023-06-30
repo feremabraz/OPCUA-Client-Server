@@ -1,0 +1,83 @@
+<Window
+    Title="OPCUA Desktop Client"
+    WindowStartupLocation="CenterScreen"
+    Icon="/Assets/avalonia-logo.ico"
+    MinWidth="400"
+    MinHeight="300"
+    Width="600"
+    Height="400"
+    CanResize="True"
+    Padding="10"
+    d:DesignHeight="400"
+    d:DesignWidth="400"
+    mc:Ignorable="d"
+    x:Class="OPCUA_Client_Desktop.Views.MainWindow"
+    x:DataType="viewModels:MainWindowViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:OPCUA_Client_Desktop.ViewModels"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:viewModels="clr-namespace:OPCUA_Client_Desktop.ViewModels">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,Auto,4*">
+
+        <!-- First Row - Title -->
+        <TextBlock Grid.Row="0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Padding="0,0,0,8"
+                   FontSize="16"
+                   FontWeight="Bold"
+                   Text="Server Explorer" />
+
+        <!-- Second Row - Callout -->
+        <Border Grid.Row="1"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Padding="8"
+                BorderBrush="Black"
+                BorderThickness="1"
+                CornerRadius="5"
+                Background="#E0E0E0">
+                <TextBlock Text="Connected to OPCUA-Server." />
+        </Border>
+
+        <!-- Third Row - TreeView and Data Template -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="20" Margin="0, 8, 0, 4">
+            <!-- TreeView -->
+            <TreeView MinWidth="200">
+                <TreeViewItem Header="Folder 1">
+                    <TreeViewItem Header="Subfolder 1">
+                        <TreeViewItem Header="File 1" />
+                        <TreeViewItem Header="File 2" />
+                    </TreeViewItem>
+                    <TreeViewItem Header="Subfolder 2">
+                        <TreeViewItem Header="File 3" />
+                        <TreeViewItem Header="File 4" />
+                    </TreeViewItem>
+                </TreeViewItem>
+                <TreeViewItem Header="Folder 2">
+                    <TreeViewItem Header="File 5" />
+                    <TreeViewItem Header="File 6" />
+                </TreeViewItem>
+            </TreeView>
+            
+            <!-- Data Template -->
+            <StackPanel Orientation="Vertical" Spacing="30" Margin="0, 7, 0, 0">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <TextBlock Text="Value:" />
+                    <TextBlock Text="[null]" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="4" IsVisible="False">
+                    <TextBlock Text="Value:" />
+                    <TextBlock Text="[null]" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
