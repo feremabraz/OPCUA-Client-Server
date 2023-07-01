@@ -6,7 +6,15 @@ internal static class ClientProgram
     private static void Main()
     {
         using var client = new OpcClient("opc.tcp://localhost:4840");
-        client.Connect();
+        try
+        {
+            client.Connect();
+        }
+        catch (Exception)
+        {
+            Console.WriteLine($"Failed to connect to the OPC server. Did you forgot to start the server?");
+            Environment.Exit(1);
+        }
         var node = client.BrowseNode(OpcObjectTypes.ObjectsFolder);
         var exitRequested = false;
         while (!exitRequested) 
