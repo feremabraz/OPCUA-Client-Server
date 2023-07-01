@@ -41,7 +41,18 @@
                     FontWeight="Bold"
                     Text="Server Explorer" />
             </StackPanel>
-            <Button Grid.Column="1" HorizontalAlignment="Right" Command="{Binding ConnectCommand}" Content="{Binding IsConnected, Converter={StaticResource BoolToConnectionStatusConverter}}" />
+            <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal" Spacing="4" >
+                <Button
+                    Command="{Binding ConnectCommand}" 
+                    Content="{Binding IsConnected, 
+                        Converter={StaticResource BoolToConnectionStatusConverter}}" 
+                    />
+                <Button 
+                    Command="{Binding FetchCommand}"
+                    IsEnabled="{Binding CanFetch}"
+                    Content="Fetch"
+                    />
+            </StackPanel>
         </Grid>
 
         <!-- Second Row - Callout -->
@@ -60,22 +71,8 @@
         <!-- Third Row - TreeView and Data Template -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="20" Margin="0, 8, 0, 4">
             <!-- TreeView -->
-            <TreeView MinWidth="200">
-                <TreeViewItem Header="Folder 1">
-                    <TreeViewItem Header="Subfolder 1">
-                        <TreeViewItem Header="File 1" />
-                        <TreeViewItem Header="File 2" />
-                    </TreeViewItem>
-                    <TreeViewItem Header="Subfolder 2">
-                        <TreeViewItem Header="File 3" />
-                        <TreeViewItem Header="File 4" />
-                    </TreeViewItem>
-                </TreeViewItem>
-                <TreeViewItem Header="Folder 2">
-                    <TreeViewItem Header="File 5" />
-                    <TreeViewItem Header="File 6" />
-                </TreeViewItem>
-            </TreeView>
+            <ListBox Width="200" Items="{Binding FetchResults}">
+            </ListBox>
             
             <!-- Data Template -->
             <StackPanel Orientation="Vertical" Spacing="30" Margin="0, 7, 0, 0">
