@@ -49,7 +49,7 @@
                     />
                 <Button 
                     Command="{Binding FetchCommand}"
-                    IsEnabled="{Binding CanFetch}"
+                    IsEnabled="{Binding IsConnected}"
                     Content="Fetch"
                     />
             </StackPanel>
@@ -68,21 +68,27 @@
                 <TextBlock Text="Error: Server not found." />
         </Border>
 
-        <!-- Third Row - TreeView and Data Template -->
+        <!-- Third Row - ListBox and linked StackPanel -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="20" Margin="0, 8, 0, 4">
-            <!-- TreeView -->
-            <ListBox MinWidth="260" Items="{Binding FetchResults}">
+            <ListBox 
+                MinWidth="260" 
+                Items="{Binding FetchResults}"
+                SelectedIndex="{Binding SelectedIndex}"
+                >
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding DisplayName}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
             </ListBox>
-            
-            <!-- Data Template -->
-            <StackPanel Orientation="Vertical" Spacing="30" Margin="0, 7, 0, 0">
+            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 7, 0, 0">
                 <StackPanel Orientation="Horizontal" Spacing="4">
-                    <TextBlock Text="Value:" />
-                    <TextBlock Text="[null]" />
+                    <TextBlock Text="ID:" />
+                    <TextBlock Text="{Binding NodeId}" />
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="4" IsVisible="False">
-                    <TextBlock Text="Value:" />
-                    <TextBlock Text="[null]" />
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <TextBlock Text="Level:" />
+                    <TextBlock Text="{Binding Level}" />
                 </StackPanel>
             </StackPanel>
         </StackPanel>

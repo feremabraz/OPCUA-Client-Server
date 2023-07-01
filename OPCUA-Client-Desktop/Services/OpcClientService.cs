@@ -8,7 +8,7 @@ namespace OPCUA_Client_Desktop.Services;
 
 public class OpcClientService : IOpcClientService
 {
-    private OpcClient _opcClient;
+    private readonly OpcClient _opcClient;
     private OpcNodeInfo? _node;
     private List<OpcNodeData> _fetchResults;
 
@@ -17,6 +17,7 @@ public class OpcClientService : IOpcClientService
         _opcClient = new OpcClient("opc.tcp://localhost:4840");
         _opcClient.Connected += (sender, args) => IsConnected = true;
         _opcClient.Disconnected += (sender, args) => IsConnected = false;
+        _fetchResults = new List<OpcNodeData>();
     }
 
     public bool IsConnected { get; private set; }
@@ -32,21 +33,24 @@ public class OpcClientService : IOpcClientService
         _opcClient.Disconnect();
     }
     
-    public List<string> Fetch()
+    public List<OpcNodeData> Fetch()
     {
+        if (!IsConnected) throw new InvalidOperationException();
+
         _fetchResults = new List<OpcNodeData>();
 
-        Stack<Tuple<OpcNodeInfo, int>> stack = new Stack<Tuple<OpcNodeInfo, int>>();
+        var stack = new Stack<Tuple<OpcNodeInfo, int>>();
         stack.Push(Tuple.Create(_node, 0)!);
 
         while (stack.Count > 0)
         {
             var (currentNode, level) = stack.Pop();
 
-            string displayName = currentNode?.Attribute(OpcAttribute.DisplayName).Value.ToString() ?? string.Empty;;
-            string nodeId = currentNode?.NodeId.ToString() ?? string.Empty;;
+            var displayName = currentNode?.Attribute(OpcAttribute.DisplayName).Value.ToString() ?? string.Empty;;
+            var nodeId = currentNode?.NodeId.ToString() ?? string.Empty;;
+            var value = currentNode?.AttributeValue(OpcAttribute.Value);
         
-            OpcNodeData nodeData = new OpcNodeData(displayName, nodeId, level);
+            var nodeData = new OpcNodeData(displayName, nodeId, level, value?.ToString() ?? string.Empty);
             _fetchResults.Add(nodeData);
 
             level++;
@@ -57,12 +61,11 @@ public class OpcClientService : IOpcClientService
             }
         }
 
-        List<string> displayNames = _fetchResults
+        _fetchResults = _fetchResults
             .Where(nodeData => nodeData.NodeId.StartsWith("ns=2"))
-            .Select(nodeData => new string(' ', nodeData.Level * 2) + nodeData.DisplayName)
             .ToList();
 
-        return displayNames;
+        return _fetchResults;
     }
 
 }

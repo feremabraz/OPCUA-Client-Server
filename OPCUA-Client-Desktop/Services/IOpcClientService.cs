@@ -7,5 +7,5 @@ public interface IOpcClientService
     bool IsConnected { get; }
     void Connect();
     void Disconnect();
-    List<string> Fetch();
+    List<OpcNodeData> Fetch();
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive;
 using ReactiveUI;
 using OPCUA_Client_Desktop.Services;
@@ -11,10 +12,11 @@ namespace OPCUA_Client_Desktop.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    private IOpcClientService _opcClientService;
+    private readonly IOpcClientService _opcClientService;
     private bool _isConnected;
     private bool _serverError;
-    private bool _canFetch;
+    private int _selectedIndex;
+    private ObservableCollection<OpcNodeData> _fetchResults;
     
     public ReactiveCommand<Unit, Unit> ConnectCommand { get; }
     public ReactiveCommand<Unit, Unit> FetchCommand { get; }
@@ -23,6 +25,12 @@ public class MainWindowViewModel : ViewModelBase
     {
         ConnectCommand = ReactiveCommand.Create(Connect);
         FetchCommand = ReactiveCommand.Create(Fetch);
+        this.WhenAnyValue(x => x.SelectedIndex)
+            .Subscribe(_ =>
+            {
+                this.RaisePropertyChanged(nameof(NodeId));
+                this.RaisePropertyChanged(nameof(Level));
+            });
         if (!Avalonia.Controls.Design.IsDesignMode) _opcClientService = new OpcClientService();
     }
 
@@ -42,12 +50,21 @@ public class MainWindowViewModel : ViewModelBase
         get => _serverError;
         set => this.RaiseAndSetIfChanged(ref _serverError, value);
     }
-    
-    private bool CanFetch
+
+    public int SelectedIndex
     {
-        get => _canFetch;
-        set => this.RaiseAndSetIfChanged(ref _canFetch, value);
+        get => _selectedIndex;
+        set => this.RaiseAndSetIfChanged(ref _selectedIndex, value);
     }
+
+    public ObservableCollection<OpcNodeData> FetchResults
+    {
+        get => _fetchResults;
+        set => this.RaiseAndSetIfChanged(ref _fetchResults, value);
+    }
+
+    public string NodeId => FetchResults.ElementAtOrDefault(SelectedIndex)?.NodeId ?? string.Empty;
+    public int Level => FetchResults.ElementAtOrDefault(SelectedIndex)?.Level ?? 0;
 
     private void Connect()
     {
@@ -58,13 +75,11 @@ public class MainWindowViewModel : ViewModelBase
                 _opcClientService.Connect();
                 IsConnected = true;
                 ServerError = false;
-                CanFetch = true;
             }
             catch (Exception)
             {
                 IsConnected = false;
                 ServerError = true;
-                CanFetch = false;
             }
         }
         else
@@ -72,19 +87,13 @@ public class MainWindowViewModel : ViewModelBase
             _opcClientService.Disconnect();
             IsConnected = false;
             ServerError = false;
-            CanFetch = false;
         }
     }
 
     private void Fetch()
     {
-        FetchResults = new ObservableCollection<string>(_opcClientService.Fetch());
+        if (!_opcClientService.IsConnected) return;
+        FetchResults = new ObservableCollection<OpcNodeData>(_opcClientService.Fetch());
     }
 
-    private ObservableCollection<string> _fetchResults;
-    public ObservableCollection<string> FetchResults
-    {
-        get => _fetchResults;
-        set => this.RaiseAndSetIfChanged(ref _fetchResults, value);
-    }
 }
