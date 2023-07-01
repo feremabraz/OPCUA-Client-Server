@@ -25,6 +25,7 @@
         <views:BoolToConnectionStatusConverter x:Key="BoolToConnectionStatusConverter" />
     </Window.Resources>
     <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE. -->
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
