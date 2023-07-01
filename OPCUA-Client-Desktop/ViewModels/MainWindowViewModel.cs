@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Reactive;
 using ReactiveUI;
+using OPCUA_Client_Desktop.Services;
 
 namespace OPCUA_Client_Desktop.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    private bool _isConnected = OpcClientSingleton.IsConnected;
+    private IOpcClientService _opcClientService;
+    private bool _isConnected;
     private bool _serverError;
 
-    public MainWindowViewModel()
+    public MainWindowViewModel(IOpcClientService opcClientService)
     {
         ConnectCommand = ReactiveCommand.Create(Connect);
+        _opcClientService = opcClientService;
     }
     
     public ReactiveCommand<Unit, Unit> ConnectCommand { get; }
@@ -30,11 +33,11 @@ public class MainWindowViewModel : ViewModelBase
 
     private void Connect()
     {
-        if (!IsConnected)
+        if (!_opcClientService.IsConnected)
         {
             try
             {
-                OpcClientSingleton.Instance.Connect();
+                _opcClientService.Connect();
                 IsConnected = true;
                 ServerError = false;
             }
@@ -46,7 +49,7 @@ public class MainWindowViewModel : ViewModelBase
         }
         else
         {
-            OpcClientSingleton.Instance.Disconnect();
+            _opcClientService.Disconnect();
             IsConnected = false;
             ServerError = false;
         }
