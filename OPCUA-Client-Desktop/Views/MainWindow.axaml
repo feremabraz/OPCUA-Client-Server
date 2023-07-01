@@ -2,7 +2,7 @@
     Title="OPCUA Desktop Client"
     WindowStartupLocation="CenterScreen"
     Icon="/Assets/avalonia-logo.ico"
-    MinWidth="400"
+    MinWidth="420"
     MinHeight="300"
     Width="600"
     Height="400"
@@ -71,7 +71,7 @@
         <!-- Third Row - TreeView and Data Template -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="20" Margin="0, 8, 0, 4">
             <!-- TreeView -->
-            <ListBox Width="200" Items="{Binding FetchResults}">
+            <ListBox MinWidth="260" Items="{Binding FetchResults}">
             </ListBox>
             
             <!-- Data Template -->

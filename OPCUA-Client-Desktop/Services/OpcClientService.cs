@@ -10,6 +10,7 @@ public class OpcClientService : IOpcClientService
 {
     private OpcClient _opcClient;
     private OpcNodeInfo? _node;
+    private List<OpcNodeData> _fetchResults;
 
     public OpcClientService()
     {
@@ -33,7 +34,7 @@ public class OpcClientService : IOpcClientService
     
     public List<string> Fetch()
     {
-        List<string> results = new List<string>();
+        _fetchResults = new List<OpcNodeData>();
 
         Stack<Tuple<OpcNodeInfo, int>> stack = new Stack<Tuple<OpcNodeInfo, int>>();
         stack.Push(Tuple.Create(_node, 0)!);
@@ -42,8 +43,11 @@ public class OpcClientService : IOpcClientService
         {
             var (currentNode, level) = stack.Pop();
 
-            string result = $"{new string('.', level * 4)}{currentNode?.Attribute(OpcAttribute.DisplayName).Value}({currentNode?.NodeId})";
-            results.Add(result);
+            string displayName = currentNode?.Attribute(OpcAttribute.DisplayName).Value.ToString() ?? string.Empty;;
+            string nodeId = currentNode?.NodeId.ToString() ?? string.Empty;;
+        
+            OpcNodeData nodeData = new OpcNodeData(displayName, nodeId, level);
+            _fetchResults.Add(nodeData);
 
             level++;
 
@@ -53,7 +57,12 @@ public class OpcClientService : IOpcClientService
             }
         }
 
-        return results;
+        List<string> displayNames = _fetchResults
+            .Where(nodeData => nodeData.NodeId.StartsWith("ns=2"))
+            .Select(nodeData => new string(' ', nodeData.Level * 2) + nodeData.DisplayName)
+            .ToList();
+
+        return displayNames;
     }
 
 }
