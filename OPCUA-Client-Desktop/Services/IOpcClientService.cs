@@ -8,4 +8,5 @@ public interface IOpcClientService
     void Connect();
     void Disconnect();
     List<OpcNodeData> Fetch();
+    string FetchSingle(string nodeId);
 }

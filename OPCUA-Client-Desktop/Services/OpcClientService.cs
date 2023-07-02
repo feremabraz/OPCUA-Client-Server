@@ -47,10 +47,10 @@ public class OpcClientService : IOpcClientService
             var (currentNode, level) = stack.Pop();
 
             var displayName = currentNode?.Attribute(OpcAttribute.DisplayName).Value.ToString() ?? string.Empty;;
-            var nodeId = currentNode?.NodeId.ToString() ?? string.Empty;;
+            var nodeId = currentNode?.NodeId.ToString() ?? string.Empty;
             var value = currentNode?.AttributeValue(OpcAttribute.Value);
         
-            var nodeData = new OpcNodeData(displayName, nodeId, level, value?.ToString() ?? string.Empty);
+            var nodeData = new OpcNodeData(displayName, nodeId, level, value ?? new object());
             _fetchResults.Add(nodeData);
 
             level++;
@@ -66,6 +66,12 @@ public class OpcClientService : IOpcClientService
             .ToList();
 
         return _fetchResults;
+    }
+
+    public string FetchSingle(string nodeId)
+    {
+        var nodeValue = _opcClient.ReadNode(nodeId);
+        return nodeValue.Value?.ToString() ?? string.Empty;
     }
 
 }

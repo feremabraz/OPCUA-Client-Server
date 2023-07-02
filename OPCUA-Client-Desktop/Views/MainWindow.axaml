@@ -4,7 +4,7 @@
     Icon="/Assets/avalonia-logo.ico"
     MinWidth="420"
     MinHeight="300"
-    Width="600"
+    Width="640"
     Height="400"
     CanResize="True"
     Padding="10"
@@ -52,6 +52,11 @@
                     IsEnabled="{Binding IsConnected}"
                     Content="Fetch"
                     />
+                <Button 
+                    Command="{Binding FetchNodeValueCommand}"
+                    IsEnabled="{Binding IsConnected}"
+                    Content="Fetch Node"
+                />
             </StackPanel>
         </Grid>
 
@@ -88,7 +93,11 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="4">
                     <TextBlock Text="Level:" />
-                    <TextBlock Text="{Binding Level}" />
+                    <TextBlock Text="{Binding NodeLevel}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <TextBlock Text="Value:" />
+                    <TextBlock Text="{Binding NodeValue}" />
                 </StackPanel>
             </StackPanel>
         </StackPanel>

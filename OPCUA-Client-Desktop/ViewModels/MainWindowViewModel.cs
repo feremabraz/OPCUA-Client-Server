@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reactive;
 using ReactiveUI;
 using OPCUA_Client_Desktop.Services;
+using Opc.UaFx;
 
 // Disables warning pertaining to a problem in the Avalonia 11 RC design previewer.
 #pragma warning disable CS8618
@@ -17,19 +18,22 @@ public class MainWindowViewModel : ViewModelBase
     private bool _serverError;
     private int _selectedIndex;
     private ObservableCollection<OpcNodeData> _fetchResults;
+    private string _nodeValue;
     
     public ReactiveCommand<Unit, Unit> ConnectCommand { get; }
     public ReactiveCommand<Unit, Unit> FetchCommand { get; }
+    public ReactiveCommand<Unit, Unit> FetchNodeValueCommand { get; }
     
     public MainWindowViewModel()
     {
         ConnectCommand = ReactiveCommand.Create(Connect);
         FetchCommand = ReactiveCommand.Create(Fetch);
+        FetchNodeValueCommand = ReactiveCommand.Create(FetchNodeValue);
         this.WhenAnyValue(x => x.SelectedIndex)
             .Subscribe(_ =>
             {
                 this.RaisePropertyChanged(nameof(NodeId));
-                this.RaisePropertyChanged(nameof(Level));
+                this.RaisePropertyChanged(nameof(NodeLevel));
             });
         if (!Avalonia.Controls.Design.IsDesignMode) _opcClientService = new OpcClientService();
     }
@@ -64,7 +68,12 @@ public class MainWindowViewModel : ViewModelBase
     }
 
     public string NodeId => FetchResults.ElementAtOrDefault(SelectedIndex)?.NodeId ?? string.Empty;
-    public int Level => FetchResults.ElementAtOrDefault(SelectedIndex)?.Level ?? 0;
+    public int NodeLevel => FetchResults.ElementAtOrDefault(SelectedIndex)?.Level ?? 0;
+    public string NodeValue
+    {
+        get => _nodeValue;
+        set => this.RaiseAndSetIfChanged(ref _nodeValue, value);
+    }
 
     private void Connect()
     {
@@ -94,6 +103,14 @@ public class MainWindowViewModel : ViewModelBase
     {
         if (!_opcClientService.IsConnected) return;
         FetchResults = new ObservableCollection<OpcNodeData>(_opcClientService.Fetch());
+    }
+
+    private void FetchNodeValue()
+    {
+        string? nodeId = FetchResults.ElementAtOrDefault(SelectedIndex)?.NodeId;
+        if (string.IsNullOrEmpty(nodeId)) return;
+        OpcReadNode nodeToRead = new OpcReadNode(nodeId);
+        NodeValue = _opcClientService.FetchSingle(nodeId);
     }
 
 }
